@@ -188,8 +188,8 @@ Useful commands to run inside the gdb environment (single-letter abbreviations i
 + break ## [b]: set a breakpoint at line number ## e.g. break 10. Alternately, break *func*, where func is the name of a function.
 + info b [i]: list breakpoints (other options than b available).
 + disable ##: disable the breakpoint with number ## (info b will show breakpoint numbers).
-+ enable ##: enable the breakpoint with number ##
-
++ enable ##: enable the breakpoint with number ##  
+___
 + run [r]: begin to execute the code.
 + step [s]: advance to next line (enter into functions).
 + next [n]: advance to next line (don't enter functions).
