@@ -164,6 +164,38 @@ $ valgrind ./leak
 ==38337== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
 
+## Debugging with GDB
+
+Sometimes, we want to do more than run the code and read output.
+We'd like to interact with the code as it runs, so we can narrow down the source of bugs.
+This is where debuggers become useful.
+You may have used one in a GUI-based IDE before.
+
+The gdb program is used for debugging work through the command line.
+First, use the -g option when compiling:
+
+```console
+$ gcc -g -o buf_overflow buf_overflow.c
+```
+
+We can now interact with the program as it runs, via gdb:
+```console
+$ gdb ./buf_overflow
+```
+
+Useful commands to run inside the gdb environment (single-letter abbreviations in brackets):
++ list ## [l]: list lines of code, beginning with line ##.
++ break ## [b]: set a breakpoint at line number ## e.g. break 10. Alternately, break *func*, where func is the name of a function.
++ info b [i]: list breakpoints (other options than b available).
++ disable ##: disable the breakpoint with number ## (info b will show breakpoint numbers).
++ enable ##: enable the breakpoint with number ##
+
++ run [r]: begin to execute the code.
++ step [s]: advance to next line (enter into functions).
++ next [n]: advance to next line (don't enter functions).
++ print var [p]: output the value stored in var.
++ watch var: show changes to value of var as they occur.
+
 ## The Art of Troubleshooting and Asking Questions
 
 There is no stupid question, but some questions are more likely to get help than the others:
