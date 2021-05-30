@@ -2,6 +2,7 @@
 #
 # Example Makefile that builds a local library "example-lib" and then an
 # application executable "example-app", which uses the library.
+# credit: Guanzhou Hu
 
 
 # This is an extremely simple version that works for this simple setting.
