@@ -7,11 +7,9 @@
 
 # This is the advanced version, showing much better automation.
 
-
+# Define "variables" to use in our commands.
 CC=gcc
 CFLAGS=-O2 -Wall -Werror
-
-
 TARGET=example-app
 
 # Use helper functions to "search" for files here.
@@ -23,9 +21,11 @@ OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 all: $(TARGET)
 
 
+# We can create .o file for each .c file...
 $(OBJECTS): %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@ $(CLIBS)
 
+# ...and build the target from .o files.
 $(TARGET): $(OBJECTS)
 	$(CC) $(CFLAGS) $^ -o $@ $(CLIBS)
 
