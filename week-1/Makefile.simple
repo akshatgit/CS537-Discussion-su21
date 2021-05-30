@@ -1,0 +1,39 @@
+# CS537 SP2021 - DIS W2
+#
+# Example Makefile that builds a local library "example-lib" and then an
+# application executable "example-app", which uses the library.
+
+
+# This is an extremely simple version that works for this simple setting.
+
+
+# .PHONY specifies a "fake target" - target that does not produce compilation outputs.
+.PHONY: all
+all: example-app
+
+
+example-lib.o: example-lib.c
+	gcc -c example-lib.c -o example-lib.o -O2 -Wall -Werror
+
+# $<: the first dependency
+# $@: the target name
+example-app.o: example-app.c
+	gcc -c $< -o $@ -O2 -Wall -Werror
+
+# $^: all the dependencies
+example-app: example-app.o example-lib.o
+	gcc $^ -o $@ -O2 -Wall -Werror
+
+
+# Useful practice: use a `clean` target to automate cleaning
+.PHONY: clean
+clean:
+	rm -f *.o example-app
+	rm -f core
+
+
+# Does it feel a little bit redundant? - YES!
+# Do you really need to add a target for source file in your project? - NO!
+# Can you include commands that are not about compilation? - YES!
+#
+# Please see the advanced version.
