@@ -83,7 +83,9 @@ Simple examples provided in the [GitHub](https://github.com/akshatgit/CS537-Disc
     clean:
         rm -f *.o $(TARGET)
         rm -f core
-    ```
+    ```  
+
+- For more information, see the GNU Make official manual: [https://www.gnu.org/software/make/manual/](https://www.gnu.org/software/make/manual/)
 
 ## Intro to Xv6
 
