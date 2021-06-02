@@ -3,8 +3,8 @@
 ## Topics:
 
 - Basics of Makefiles
-- Intro to Xv6
-- Xv6 and GDB
+- Intro to xv6
+- xv6 and GDB
 
 ## Makefiles
 
@@ -56,8 +56,6 @@ Simple examples provided in the [GitHub](https://github.com/akshatgit/CS537-Disc
     ```
 - Advanced:
     ```bash
-    # This is the advanced version, showing much better automation.
-
     # Define "variables" to use in our commands
     CC=gcc
     CFLAGS=-O2 -Wall -Werror
