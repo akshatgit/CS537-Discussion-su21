@@ -89,10 +89,11 @@ Simple examples provided in the [GitHub](https://github.com/akshatgit/CS537-Disc
 
 ## Intro to Xv6
 
-To get the source code:
+To get the source code, copy xv6 tar file in your private directory:
 
 ```bash
-$ git clone https://github.com/mit-pdos/xv6-public.git 
+$ cp /p/course/cs537-yuvraj/public/xv6.tar.gz .
+$ tar -xvf xv6.tar.gz
 ```
 
 To compile the xv6:
