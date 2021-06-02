@@ -87,4 +87,12 @@ Simple examples provided in the [GitHub](https://github.com/akshatgit/CS537-Disc
         rm -f core
     ```
 
+## Intro to Xv6
+
+To get the source code:
+
+```
+shell> git clone https://github.com/mit-pdos/xv6-public.git 
+```
+
 Adapted from work by Guanzhou Hu and Chenhao Ye
