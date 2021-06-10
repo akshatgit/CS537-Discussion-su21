@@ -73,7 +73,7 @@ We will explore main files required to do p2A.
 - `trapasm.S`: The user-space just issues an interrupt with an operand `64`. The CPU then starts to run the kernel's interrupt handler.
     - It builds what we call a trap frame, which basically saves some registers into the stack and makes them into a data structure `trapframe`. 
 
-    - `trapframe` is defined in `xv6.h`:
+    - `trapframe` is defined in `x86.h`:
 
     ```C
     struct trapframe {
@@ -317,7 +317,7 @@ printf("fd: %d\n", fd);
 
 It turns out there is a level of indirection here: the kernel maintains such states and the file descriptor it returns is essentially a "handler" for later index back to these states. The kernel provides the guarantee that "the user provides the file descriptor and the operations to perform, the kernel will look up the file states that corresponding to the file descriptor and operate on it". -->
 
-It would be helpful to understand what happens with some actual code from a kernel. For simplicity, we use ths xv6 code below to illustrate how file descriptor works, but remember, your p3 is on Linux. Linux has a very similar implementation.
+It would be helpful to understand what happens with some actual code from a kernel. For simplicity, we use ths xv6 code below to illustrate how file descriptor works, but remember, your p2b is on Linux. Linux has a very similar implementation.
 
 For every process state (`struct proc` in xv6), it has an array of `struct file` (see the field  `proc.ofile`) to keep a record of the files this process has opened.
 
