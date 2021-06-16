@@ -135,11 +135,15 @@ What it does is scanning through the ptable and find a `RUNNABLE` process `p`, t
 1. set current CPU's running process to `p`: `c->proc = p`
 2. switch userspace page table to `p`: `switchuvm(p)`
 3. set `p` to `RUNNING`: `p->state = RUNNING`
-4. `swtch(&(c->scheduler), p->context)`: This is the most tricky and magic piece. What it does is saving the current registers into `c->scheduler`, and loading the saved registers from `p->context`. After executing this line, the CPU is actually starting to executing `p`'s code (strictly speaking, it's in `p`'s kernel space, not jumping back to `p`'s userspace yet), and the next line `switchkvm()` will not be executed until later this process traps back to kernel again.
+4. `swtch(&(c->scheduler), p->context)`: This is the most tricky and magic piece. What it does is save the current registers into `c->scheduler`, and load the saved registers from `p->context`. After executing this line, the CPU is actually starting to execute `p`'s code (strictly speaking, it's in `p`'s kernel space, not jumping back to `p`'s userspace yet), and the next line `switchkvm()` will not be executed until later this process traps back to kernel again.
 
-Both `c->scheduler` and `p->context` are of type `struct context`. `c` is of type `struct cpu`.
+Both `c->scheduler` and `p->context` are of type `struct context`, while `c` is of type `struct cpu`.
+
+What is the "context"?  
+Let's consider a single CPU core. On that core, we have the notion of the current **execution context**, which basically means the current values of the following registers:
 
 ```C
+// proc.h
 // Saved registers for kernel context switches.
 // Don't need to save all the segment registers (%cs, etc),
 // because they are constant across kernel contexts.
@@ -154,10 +158,20 @@ struct context {
   uint edi;
   uint esi;
   uint ebx;
-  uint ebp;
-  uint eip;
+  uint ebp;     // backup of stack pointer
+  uint eip;     // instruction pointer
 };
+```
 
+Each CPU core has its current context. The context defines where in code this CPU core is currently running.
+
+To jump between different processes, we "switch" the context - this is called a process **context switch**.
+- We save the current running process P1's context somewhere - **To where?**  Into P1's PCB.
+- We set the CPU context to be the context we previously saved for the to-be-scheduled process P2 - **From where?**  From P2's PCB.
+
+The `cpu` struct details are below:
+
+```C
 struct cpu {
   uchar apicid;                // Local APIC ID
   struct context *scheduler;   // swtch() here to enter scheduler
@@ -179,11 +193,14 @@ struct proc {
 };
 ```
 
+**What is the first user process that gets scheduled on the CPU?**  The `init` process. The `init` then forks a child `sh`, which runs the xv6 shell program. The `init` then waits on `sh`, and the `sh` process will at some timepoint be scheduled -- this is when you see that active xv6 shell prompting you for some input!
+
 [QUIZ] Before we finishing this section, consider this question: what is the current xv6's scheduling policy?
 
 ## `sched()`: From User Process to Scheduler
 
-As you see in the scheduler, when a scheduler decision is made, `swtch(&(c->scheduler), p->context)` will switch to that process. Then we will see how a process switches into the scheduler.
+As you see in the scheduler, when a scheduler decision is made, `swtch(&(c->scheduler), p->context)` will switch to that user process.  
+**But when will a user process swtch back to the scheduler?**  Basically, whenever the process calls `sched()`. 
 
 ```C
 // Enter scheduler.  Must hold only ptable.lock
@@ -215,7 +232,17 @@ sched(void)
 
 Skip some uninteresting sanity checking, the major work is really just one single line: `swtch(&p->context, mycpu()->scheduler)`.
 
-It will also be interesting to see who will call `sched()`. Try it yourself by searching inside the xv6 codebase.
+There are three cases where a process could come into kernel mode and call `sched()`:
+
+- The process *exits*
+- The process goes to *block* voluntarily, examples:
+  - It calls the sleep syscall
+  - It calls the wait syscall
+  - It tries to read on a pipe
+- The process "*yield*"s - typically at a timer interrupt
+  - At every ~10ms, the timer issues a hardware interrupt
+  - This forces the CPU to trap into the kernel, see `trap()` in `trap.c`, the `IRQ_TIMER` case
+  - xv6 then increments a global counter named `ticks`, then `yield()` the current running process
 
 ```C
 // Exit the current process.  Does not return.
