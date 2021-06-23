@@ -1,4 +1,4 @@
-# COMP SCI 537 Discussion Week 7
+# COMP SCI 537 Discussion Week 4
 
 ## How to approach P3?
 - Implement easy syscalls first
