@@ -46,7 +46,13 @@ void procB() {                           //     => void procB() {
 
 ## `sleep()`: is not really just sleeping
 
-The `proc.c:sleep()` function in xv6 is a terrible name... What it does is more like "waiting" instead of sleeping.
+There are typically three cases of *voluntary blocking* of a user process in xv6:
+
+* It calls the `sleep(num_ticks)` syscall, which will be served by the in-kernel function `sys_sleep()`
+* It calls the `wait()` syscall, trying to wait for a child process to finish
+* It tries to do `read()` on a blocking pipe - a mechanism for doing inter-process communications
+
+A slightly confusing naming here: all these three situations will eventually call an internal helper function, `proc.c: sleep(chan)`, that performs the blocking. Though named `sleep`, this internal helper function is used not only by `sys_sleep()`, but also by all other mechanisms of blocking. So `proc.c:sleep(chan)` function in xv6 is a terrible name... What it does is more like "waiting" or "blocking" instead of sleeping.
 
 ```C
 // Atomically release lock and sleep on chan.
@@ -93,7 +99,7 @@ What does this do? `sleep()` works just like `pthread_cond_wait`: it requires th
 
 What does this mean (what is the semantics of this function)? "Channel" here is a waiting mechanism which could be any address. When process A updates a data structure and expects that some other processes could be waiting on a change of this data structure, A can scan and check other SLEEPING processes' `chan; `if process B's `chan` holds the address of the data structure process A just updated, then A would wake B up.
 
-It might be helpful to read `sleep()` with its duality function `wakeup()`:
+It might be helpful to read `sleep()` with its inverse function `wakeup()`:
 
 ```C
 // Wake up all processes sleeping on chan.
@@ -118,7 +124,7 @@ wakeup(void *chan)
 }
 ```
 
-Now let's take a closer look of `sleep()`:
+Now let's take a closer look at `sleep()`:
 
 ```C
 void
@@ -170,11 +176,11 @@ sched(void)
 }
 ```
 
-Remember this condition checking... It will save you from a lot of kernel panic I promise...
+Remember this condition checking... It will save you from a lot of kernel panic we promise...
 
 ## `sys_sleep()`: A Use Case of `sleep()`
 
-After understanding `sleep()`, we are now able to understand how `sleep()` works.
+After understanding `sleep()`, we are now able to understand how `sys_sleep()` works.
 
 ```C
 // In sysproc.c
@@ -278,7 +284,7 @@ wakeup1(void *chan)
 
 ## One More (Important) Hint
 
-Whenever you need to access the global variable `ticks`, think twice whether the `ticklock` has already be held or not. As you may see in the quiz, a process who tries to acquire the lock that it has already acquired will cause a kernel panic.
+Whenever you need to access the global variable `ticks`, think twice whether the `ticklock` is already being held or not. As you may see in the quiz, a process who tries to acquire the lock that it has already acquired will cause a kernel panic.
 
 For example, suppose you want to access `ticks` in `sleep()`. Instead of
 
