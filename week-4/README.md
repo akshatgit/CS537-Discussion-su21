@@ -1,10 +1,16 @@
 # COMP SCI 537 Discussion Week 7
 
-## TODO: emphasize implementing P3 piece-by-piece, not all in a one-shot approach.Iterative development instead of waterfall approach.
+## How to approach P3?
+- Implement easy syscalls first
+- - For e.g. Implement `setslice`, `getslice` and `fork2` first. 
+- Test each part independently. 
+- - Create custom test user applications. For e.g. when you implement the first 3 syscalls, create a C file, spawn a child process with `fork2`, set it's slice and try to fetch the same with `getslice` syscall. 
+- - Debug any issue with GDB (Can't stress this more!). 
+- - If you are failing any public test case, copy it's code and make a user program. Refer to [this](https://piazza.com/class/kolxzgun59y5rs?cid=133) piazza post. 
+- Start Early! (Biggest Hint!)
 
-Let's start this week's discussion with a quiz.
 
-To wait for a condition variable (using pthread API for example):
+## To wait for a condition variable (using pthread API for example):
 
 ```C
 int pthread_cond_wait(pthread_cond_t *restrict cond, pthread_mutex_t *restrict mutex)
