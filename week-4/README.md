@@ -284,7 +284,7 @@ wakeup1(void *chan)
 
 ## One More (Important) Hint
 
-Whenever you need to access the global variable `ticks`, think twice whether the `ticklock` is already being held or not. As you may see in the quiz, a process who tries to acquire the lock that it has already acquired will cause a kernel panic.
+Whenever you need to access the global variable `ticks`, think twice whether the `ticklock` is already being held or not. A process who tries to acquire the lock that it has already acquired will cause a kernel panic.
 
 For example, suppose you want to access `ticks` in `sleep()`. Instead of
 
