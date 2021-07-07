@@ -11,13 +11,14 @@ Pictures below are from [xv6 book](https://pdos.csail.mit.edu/6.828/2018/xv6/boo
 
 xv6 is a 32-bit OS, so its virtual address is of size 4GB (2^32 bytes). The bottom half [0, KERNBASE] is in userspace and the top half is in kernel space. For example, if you try to dereference a pointer `0xFE000000`, you will get a page fault because it is not a valid userspace address and you get a permission denial. This memory layout also implies, for all the processes, their page table entries for memory over KERNBASE is the same (because they share the same kernel).
 
-All the physical memory (`pa`) is directly mapped into the kernel space `kva` so that the kernel could easily access every byte of physical memory. If a page is given to a user process, this page of the physical memory will also be mapped into this process's page table as `uva` (so yes, this physical address may have two associated virtual addresses).
+All the physical memory (`pa`) is directly mapped into the kernel space `kva` so that the kernel could easily access every byte of physical memory. 
+<!-- If a page is given to a user process, this page of the physical memory will also be mapped into this process's page table as `uva` (so yes, this physical address may have two associated virtual addresses). -->
 
 A detailed view of userspace memory layout (the green part of the picture above):
 
 ![userspace_memory_layout](pic/userspace_memory_layout.png)
 
-Fun fact: Given this virtual address layout, you may notice you could actually dereference a NULL pointer in xv6 because it is a valid address in xv6 (the first byte in text section).
+<!-- Fun fact: Given this virtual address layout, you may notice you could actually dereference a NULL pointer in xv6 because it is a valid address in xv6 (the first byte in text section). -->
 
 ## Clock Algorithm
 
