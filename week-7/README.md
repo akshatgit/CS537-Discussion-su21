@@ -80,6 +80,55 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
   return &pgtab[PTX(va)];
 }
 ```
+## Page Fault
+
+We are using page fault to decrypt the data. When the user accesses an encrypted page, we (the kernel) want to decrypt the data before it actually see the data. To do this, we use page fault as a hack. We clear the "present" bit of this page so every time the user tries to access this page, the CPU will trigger a page fault and ask the kernel to handle. The kernel can then involve to decrypt the data.
+
+The page fault is also a trap. Its trap number is defined in `traps.h`
+
+```C
+#define T_PGFLT         14      // page fault
+```
+
+In `trap.c`, let's take another look at the trap handler:
+
+```C
+void
+trap(struct trapframe *tf)
+{
+// ...
+  switch(tf->trapno){
+  case T_IRQ0 + IRQ_TIMER:
+    // ...
+  case T_IRQ0 + IRQ_IDE:
+    // ...
+  case T_IRQ0 + IRQ_IDE+1:
+    // ...
+  case T_IRQ0 + IRQ_KBD:
+    // ...
+  case T_IRQ0 + IRQ_COM1:
+    // ...
+  case T_IRQ0 + 7:
+  case T_IRQ0 + IRQ_SPURIOUS:
+    // ...
+  default:
+    if(myproc() == 0 || (tf->cs&3) == 0){
+      // In kernel, it must be our mistake.
+      cprintf("unexpected trap %d from cpu %d eip %x (cr2=0x%x)\n",
+              tf->trapno, cpuid(), tf->eip, rcr2());
+      panic("trap");
+    }
+    // In user space, assume process misbehaved.
+    cprintf("pid %d %s: trap %d err %d on cpu %d "
+            "eip 0x%x addr 0x%x--kill proc\n",
+            myproc()->pid, myproc()->name, tf->trapno,
+            tf->err, cpuid(), tf->eip, rcr2());
+    myproc()->killed = 1;
+  }
+}
+```
+
+You may notice there is no `case` for  `T_PGFLT`, which means it will fall into `default`, whose behavior is to kill the process. Now you need to add a `case` for `T_PGFLT` to decide whether it is indeed an invalid memory access or just access an encrypted memory. If it is an encrypted memory, you need to decrypt it instead.
 
 ## A few random bits based on Piazza questions:
 
