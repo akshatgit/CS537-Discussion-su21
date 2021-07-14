@@ -80,9 +80,6 @@ walkpgdir(pde_t *pgdir, const void *va, int alloc)
   return &pgtab[PTX(va)];
 }
 ```
-
-https://piazza.com/class/kolxzgun59y5rs?cid=238
-https://piazza.com/class/kolxzgun59y5rs?cid=241
 <!-- ## How to  -->
  
 <!-- ## Where to encrypt in exec() -->
