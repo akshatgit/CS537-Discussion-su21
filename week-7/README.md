@@ -159,9 +159,11 @@ uint pte_u = *pte & PTE_U; // pte_u is set to '1' if 3rd bit of *pte is '1', or 
 if (*pte & PTE_U) {
   // code runs if 3rd bit of *pte is '1', otherwise skipped.
 }
+```
 
-// ...
+On the other hand, to "set" a bit, we can use OR operation:
 
+```c
 *pte = *pte | PTE_U; // PTE_U only has a '1' at 3rd bit. So 3rd bit of *pte is now '1', all other bits remain the same.
 ```
 
