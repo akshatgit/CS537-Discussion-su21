@@ -8,6 +8,7 @@ In order to add these features to the server, you'll want to know a bit about th
 
 
 ## Mutex
+(see `multi-threading.c`)
 
 Below are some APIs that you need to know for pthread mutex.
 
@@ -121,6 +122,7 @@ pthread_cond_destroy(&cond_var);
 You should read the man page to fully understand the details.
 
 ## Shared Memory
+(see `shared-memory-rd.c`,  `shared-memory-slot.h`, and `shared-memory-wr.c`)
 
 We know that different threads of a process share the address space so they could access each other's memory. In fact, memory could also be shared across processes. Thanks to the idea of "virtual memory", shared memory could be implemented by mapping the same piece of physical memory to more than one process's address space. Then, these processes could communicate by read/write this shared memory. Note that, this physical memory could be mapped to different virtual addresses in different processes, so you probably don't want to store any pointer to the shared memory because a pointer is a virtual address; it means nothing on the other process's address space.
 
@@ -171,12 +173,11 @@ pid_a2 = shm_slot_ptr[1].pid;
 After you done with the shared memory (e.g. when you are going to exit), you need to call `munmap`.
 
 ## Signal
+(see `signal-handler.c`)
 
 The web server's main thread is in an infinite loop. To end the web server process, we need to send a `SIGINT` signal (Ctrl-C from a UNIX shell, indicating termination). Normally, a C program just terminates when receiving SIGINT.
 
 So, we need a user-defined signal handler, and "register" it with SIGINT. Then, when the process receives SIGINT, it calls back this handler function.
-
-See `signal-handler.c` for examples of registering a signal handler using `signal()`.
 
 The idea of signaling is, the system provides a way to interrupt what you are executing and jump to handle an event. We probably won't have time to dive into the details. Instead, you could read the [document](https://www.gnu.org/software/libc/manual/html_node/Signal-Actions.html) yourself.
 
