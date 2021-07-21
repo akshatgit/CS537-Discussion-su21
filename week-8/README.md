@@ -1,6 +1,10 @@
 # COMP SCI 537 Discussion Week 8
 
-Today we will talk about p5. It will be relatively easier. 
+Today we will talk about p5. It will be relatively easier than the last few projects. 
+In this 5th and final assignment, you'll add multithreading and shared memory features to a web server.
+
+In order to add these features to the server, you'll want to know a bit about the threading libraries and library features to use.
+
 
 
 ## Mutex
@@ -132,6 +136,7 @@ To remove the shared memory object, you need to call `shm_unlink`.
 
 `shm_open` will create a "fake" file and available to access it using file-like API, but it is not convenient to use `read`, `write`, and `lseek` to jump back and forth (image after reading the 12th bytes and you want to read the 6th bytes, you have to call `lseek` to rewind and then `read`; and you have to allocate some buffer for `read` syscall). This also has a lot of syscall overhead. This comes with another great idea: memory-mapped I/O.
 
+
 ## Memory-mapped I/O
 
 The idea of memory-mapped I/O is, we know both "file" and "memory" are just a chunk of bits, why not fuse them together! We could just **map** the data of a file into the address space and read/write it just like read/write the memory. To do this, use `mmap`:
@@ -167,7 +172,13 @@ After you done with the shared memory (e.g. when you are going to exit), you nee
 
 ## Signal
 
-The idea of signaling is, the system provides a way to interrupt what you are executing and jump to handle an event. We probably won't have time to dive into the deatils. Instead, you could read the [document](https://www.gnu.org/software/libc/manual/html_node/Signal-Actions.html) yourself.
+The web server's main thread is in an infinite loop. To end the web server process, we need to send a `SIGINT` signal (Ctrl-C from a UNIX shell, indicating termination). Normally, a C program just terminates when receiving SIGINT.
+
+So, we need a user-defined signal handler, and "register" it with SIGINT. Then, when the process receives SIGINT, it calls back this handler function.
+
+See `signal-handler.c` for examples of registering a signal handler using `signal()`.
+
+The idea of signaling is, the system provides a way to interrupt what you are executing and jump to handle an event. We probably won't have time to dive into the details. Instead, you could read the [document](https://www.gnu.org/software/libc/manual/html_node/Signal-Actions.html) yourself.
 
 
 ## Tips
@@ -176,5 +187,10 @@ The idea of signaling is, the system provides a way to interrupt what you are ex
 
 - You don't need to synchronize across two processes in this project. It is okay for the stat process to read some half-updated data by the web server. This means you don't need to put a mutex on the shared memory.
 
+## Some Helpful Links:
 
-Finally, thanks for coming to my discussion section this semester! Good luck with your last project and the final exam.
+- POSIX `pthread` tutorial: [https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html](https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html)
+- POSIX shared-memory tutorial: [https://www.geeksforgeeks.org/posix-shared-memory-api/](https://www.geeksforgeeks.org/posix-shared-memory-api/)
+- User-defined signal handler with `signal`: [https://www.geeksforgeeks.org/signals-c-language/](https://www.geeksforgeeks.org/signals-c-language/)
+
+<!-- Finally, thanks for coming to my discussion section this semester! Good luck with your last project and the final exam. -->
