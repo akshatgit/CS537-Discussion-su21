@@ -62,6 +62,7 @@ After destroying the mutex, all calls to this mutex variable will fail. Sometime
 
 
 ## Condition Variable
+[Why is CV required?](https://stackoverflow.com/questions/12551341/when-is-a-condition-variable-needed-isnt-a-mutex-enough)
 
 Below are some functions (from the man page) that you may need to know for this project.
 
@@ -99,11 +100,12 @@ To wait on the condition variable, recall you must acquire the mutex first
 pthread_mutex_lock(&mutex);
 // access/modify some shared variables
 
-while (some_check()) // [QUIZ]: why while-loop here?
+while (some_check())
     pthread_cond_wait(&cond_var, &mutex);
 
 pthread_mutex_unlock(&mutex);
 ```
+[QUIZ](https://docs.oracle.com/cd/E19455-01/806-5257/6je9h032r/index.html): `Why while-loop here?`
 
 To signal the waiting thread:
 
@@ -124,13 +126,16 @@ You should read the man page to fully understand the details.
 ## Shared Memory
 (see `shared-memory-rd.c`,  `shared-memory-slot.h`, and `shared-memory-wr.c`)
 
-We know that different threads of a process share the address space so they could access each other's memory. In fact, memory could also be shared across processes. Thanks to the idea of "virtual memory", shared memory could be implemented by mapping the same piece of physical memory to more than one process's address space. Then, these processes could communicate by read/write this shared memory. Note that, this physical memory could be mapped to different virtual addresses in different processes, so you probably don't want to store any pointer to the shared memory because a pointer is a virtual address; it means nothing on the other process's address space.
+We know that different threads of a process share the address space so they could access each other's memory. In fact, memory could also be shared across processes. Thanks to the idea of "virtual memory", shared memory could be implemented by mapping the same piece of physical memory to more than one process's address space. Then, these processes could communicate by read/write this shared memory. 
+
+`Note that, this physical memory could be mapped to different virtual addresses in different processes, so you probably don't want to store any pointer to the shared memory because a pointer is a virtual address; it means nothing on the other process's address space.`
 
 To create a shared memory object, use `shm_open`
 
 ```C
 int shm_fd = shm_open("shm-akshat", O_RDWR | O_CREAT, 0660);
 ```
+[Quiz](https://stackoverflow.com/questions/24875257/why-use-shm-open): Why not open a regular file?
 
 This call will create a file as `/dev/shm/shm-akshat`. This is a Unix philosophy that ["everything is a file"](https://en.wikipedia.org/wiki/Everything_is_a_file). Under this philosophy, many operations expose a file-like interface e.g. you have seen that the network IO is also done by a file descriptor. This means you could read/write to this object using a file operation. For example, you could remove this shared memory object by simply running `rm /dev/shm/shm-akshat` from the shell.
 

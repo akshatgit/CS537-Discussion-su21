@@ -15,7 +15,7 @@ main(void) {
     int pagesize = getpagesize();
 
     // Create the shared memory region.
-    int shmfd = shm_open("josehu", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+    int shmfd = shm_open("akshat", O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
     if (shmfd < 0) {
         perror("shm_open");
         return 1;
