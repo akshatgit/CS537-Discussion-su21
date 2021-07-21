@@ -159,20 +159,13 @@ Note `mmap` could be applied to normal files, but in this project, we apply it t
 `mmap` returns a raw pointer `void*`, and you need to make some rules for both processes accessing it (say, on what location storing what kind of data). We recommend doing it by casting this pointer into an array.
 
 ```C
-typedef struct {
-    int pid;
-    // ...
+typedef struct slot {
+    char str[100];
+    int num;
 } slot_t;
 slot_t* shm_slot_ptr = (slot_t*) shm_ptr;
 
-// for process A1:
-shm_slot_ptr[0].pid = getpid();
-// for process A2:
-shm_slot_ptr[1].pid = getpid();
-
-// for process B:
-pid_a1 = shm_slot_ptr[0].pid;
-pid_a2 = shm_slot_ptr[1].pid;
+shm_ptr[0].num = 123;
 ```
 
 After you done with the shared memory (e.g. when you are going to exit), you need to call `munmap`.
