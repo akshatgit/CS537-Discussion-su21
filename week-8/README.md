@@ -173,11 +173,8 @@ After you done with the shared memory (e.g. when you are going to exit), you nee
 ## Signal
 (see `signal-handler.c`)
 
-The web server's main thread is in an infinite loop. To end the web server process, we need to send a `SIGINT` signal (Ctrl-C from a UNIX shell, indicating termination). Normally, a C program just terminates when receiving SIGINT.
 
-So, we need a user-defined signal handler, and "register" it with SIGINT. Then, when the process receives SIGINT, it calls back this handler function.
-
-The idea of signaling is, the system provides a way to interrupt what you are executing and jump to handle an event. We probably won't have time to dive into the details. Instead, you could read the [document](https://www.gnu.org/software/libc/manual/html_node/Signal-Actions.html) yourself.
+The idea of signaling is, the system provides a way to interrupt what you are executing and jump to handle an event. You should read more in this [document](https://www.gnu.org/software/libc/manual/html_node/Signal-Actions.html) yourself.
 
 
 ## Tips
