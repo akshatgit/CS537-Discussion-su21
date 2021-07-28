@@ -2,15 +2,16 @@
 
 <!-- Copyright 2021 Guanzhou Hu -->
 
-Topics:
+Topics covered last week:
+- Multi-threading with `pthread`
+- Shared memory with `shm`
 
+Reviewing topics again:
 - Web server architecture
-- Multi-threading w/ `pthread`
-- Shared memory w/ `shm`
 - Signal handler
 - P5 overview & tips
 
-Links:
+More Links:
 
 - POSIX `pthread` tutorial: [https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html](https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html)
 - POSIX shared-memory tutorial: [https://www.geeksforgeeks.org/posix-shared-memory-api/](https://www.geeksforgeeks.org/posix-shared-memory-api/)
@@ -27,9 +28,9 @@ There is a clear separation into two parts:
 - Part A: making the web server multi-threaded, workers grab work from a work buffer (red arrows)
 - Part B: make a stat process, use shared memory to share statistics between two processes (blue arrows)
 
-## Multithreading w/ POSIX `pthread`
+## Multithreading with POSIX `pthread`
 
-See `multi-threading.c` for examples of the POSIX `pthread` API. **You need `-lpthread` compiler flag to indicate you are linking against the pthread library**.
+See `multi-threading.c`(in week-8) for examples of the POSIX `pthread` API. **You need `-lpthread` compiler flag to indicate you are linking against the pthread library**.
 
 For this project, we have requirements on the multi-threading model:
 - **Fixed-size thread pool** created beforehand
@@ -49,7 +50,7 @@ This is exactly a producer-consumer model! We just have multiple consumers.
 
 ## Shared Memory across Processes w/ POSIX `shm`
 
-See `shared-memory-wr.c` & `shared-memory-rd.c` for examples of the POSIX `shm` API. **You need `-lrt` compiler flag to indicate you are linking against the real-time library** (which the `shm` API is part of).
+See `shared-memory-wr.c` & `shared-memory-rd.c`(week-8) for examples of the POSIX `shm` API. **You need `-lrt` compiler flag to indicate you are linking against the real-time library** (which the `shm` API is part of).
 
 - To create a shared memory region: `shm_open()` with `O_RDWR | O_CREAT` in the flags
     - This creates the shared memory "fake" file if the name does not exist, and returns you a file descriptor
@@ -74,12 +75,12 @@ However, we want some extra work to be done at termination. In particular, we ne
 
 So, we need a user-defined signal handler, and "register" it with SIGINT. Then, when the process receives SIGINT, it calls back this handler function.
 
-See `signal-handler.c` for examples of registering a signal handler using `signal()`.
+See `signal-handler.c`(week-8) for examples of registering a signal handler using `signal()`.
 
 ## P5 Overview & Tips
 
-I pretty covered everything about P5 in the above four sections.
+I pretty covered everything about P5 in the last two weeks. 
 
 Tips:
 - Split into two parts - multi-threading and shared memory, they are quite orthogonal.
-- All basic user-level programming! Nothing in kernel, should be easier to do than P4-P6.
+- All basic user-level programming! Nothing in kernel, should be easier to do than previous projects. 
