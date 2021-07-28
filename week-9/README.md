@@ -1,4 +1,4 @@
-# CS537 SP2021 DIS-315 Week 9
+# CS537 Week 9
 
 <!-- Copyright 2021 Guanzhou Hu -->
 
