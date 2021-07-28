@@ -1,4 +1,4 @@
-# CS537 SP2021 DIS-315 Week 13
+# CS537 SP2021 DIS-315 Week 9
 
 <!-- Copyright 2021 Guanzhou Hu -->
 
@@ -8,7 +8,7 @@ Topics:
 - Multi-threading w/ `pthread`
 - Shared memory w/ `shm`
 - Signal handler
-- P7 overview & tips
+- P5 overview & tips
 
 Links:
 
@@ -75,9 +75,9 @@ So, we need a user-defined signal handler, and "register" it with SIGINT. Then, 
 
 See `signal-handler.c` for examples of registering a signal handler using `signal()`.
 
-## P7 Overview & Tips
+## P5 Overview & Tips
 
-I pretty covered everything about P7 in the above four sections.
+I pretty covered everything about P5 in the above four sections.
 
 Tips:
 - Split into two parts - multi-threading and shared memory, they are quite orthogonal.
