@@ -64,6 +64,7 @@ See `shared-memory-wr.c` & `shared-memory-rd.c` for examples of the POSIX `shm` 
 Typically, there should be some synchronization mechanisms to let multiple processes synchronize on the access to the shared memory region, so that no one writes partial data or reads out corrupted data. For this project, you don't need to worry about such synchronization. It is OK for the stat process to temporarily read out something inconsistent.
 
 <ins>One thing you need to think about</ins>: Each worker thread should write statistics into its own slot in the shared memory region.
+What data should each worker write? Think about the data that the stat_process must display.
 
 ## User-Defined Signal Handler
 
