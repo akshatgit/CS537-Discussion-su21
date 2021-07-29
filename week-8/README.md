@@ -165,7 +165,7 @@ typedef struct slot {
 } slot_t;
 slot_t* shm_slot_ptr = (slot_t*) shm_ptr;
 
-shm_ptr[0].num = 123;
+shm_slot_ptr[0].num = 123;
 ```
 
 After you done with the shared memory (e.g. when you are going to exit), you need to call `munmap`.
